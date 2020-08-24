@@ -508,6 +508,15 @@ static av_cold int omx_component_init(AVCodecContext *avctx, const char *role)
     CHECK(err);
     s->num_out_buffers = out_port_params.nBufferCountActual;
 
+    // aspect ratio
+    OMX_CONFIG_POINTTYPE config;
+    INIT_STRUCT(config);
+    config.nPortIndex = s->out_port;
+    config.nX = avctx->sample_aspect_ratio.num;
+    config.nY = avctx->sample_aspect_ratio.den;
+    err = OMX_SetParameter(s->handle, 0x7f00004d, &config);
+    CHECK(err);
+
     INIT_STRUCT(vid_param_bitrate);
     vid_param_bitrate.nPortIndex     = s->out_port;
     vid_param_bitrate.eControlRate   = OMX_Video_ControlRateVariable;
