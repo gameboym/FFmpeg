@@ -502,6 +502,7 @@ extern  AVFilter ff_asink_abuffer;
 extern  AVFilter ff_vsink_buffer;
 extern AVFilter ff_af_afifo;
 extern AVFilter ff_vf_fifo;
+extern AVFilter ff_vf_scale_omx;
 
 #include "libavfilter/filter_list.c"
 
