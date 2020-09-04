@@ -753,7 +753,7 @@ static int omx_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
         buffer = get_buffer(&s->input_mutex, &s->input_cond,
                             &s->num_free_in_buffers, s->free_in_buffers, 1);
 
-        buffer->nFilledLen = av_image_fill_arrays(dst, linesize, buffer->pBuffer, avctx->pix_fmt, s->stride, s->plane_size, 1);
+		buffer->nFilledLen = av_image_get_buffer_size(avctx->pix_fmt, s->stride, s->plane_size, 1);
 
         if (s->input_zerocopy) {
             uint8_t *src[4] = { NULL };
@@ -802,7 +802,7 @@ static int omx_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
             need_copy = 1;
         }
         if (need_copy)
-            av_image_copy(dst, linesize, (const uint8_t**) frame->data, frame->linesize, avctx->pix_fmt, avctx->width, avctx->height);
+			av_image_copy_to_buffer(buffer->pBuffer, buffer->nFilledLen, (const uint8_t**) frame->data, frame->linesize, avctx->pix_fmt, avctx->width, avctx->height, 1);
         buffer->nFlags = OMX_BUFFERFLAG_ENDOFFRAME;
         buffer->nOffset = 0;
         // Convert the timestamps to microseconds; some encoders can ignore
